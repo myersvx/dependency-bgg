@@ -15,6 +15,7 @@ def create_game_from_xml(xml_root, game_id):
         raise BGGApiError("item has an unsupported type")
 
     data = {"id": game_id,
+            "type": game_type,
             "name": xml_subelement_attr(xml_root, "name[@type='primary']"),
             "alternative_names": xml_subelement_attr_list(xml_root, "name[@type='alternate']"),
             "thumbnail": xml_subelement_text(xml_root, "thumbnail"),
