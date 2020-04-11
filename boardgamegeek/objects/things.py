@@ -31,6 +31,7 @@ class Thing(DictObject):
             raise BGGError("id ({}) is not an int when trying to create a Thing".format(data["id"]))
 
         self._name = data["name"]
+        self._type = data.get("type", "unknown")
 
         super(Thing, self).__init__(data)
 
@@ -41,6 +42,14 @@ class Thing(DictObject):
         :rtype: str
         """
         return self._name
+        
+    @property
+    def type(self):
+        """
+        :return: type
+        :rtype: str
+        """
+        return self._type
 
     @property
     def id(self):

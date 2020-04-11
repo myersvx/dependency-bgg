@@ -1056,7 +1056,7 @@ class BoardGame(BaseGame):
         :rtype: integer
         :return: ``None`` if n/a
         """
-        return self._stats.users_wanting
+        return self._data.get("wanting")
 
     @property
     def users_wishing(self):
@@ -1065,7 +1065,7 @@ class BoardGame(BaseGame):
         :rtype: integer
         :return: ``None`` if n/a
         """
-        return self._stats.users_wishing
+        return self._data.get("wishing")
 
     @property
     def users_commented(self):
@@ -1074,7 +1074,7 @@ class BoardGame(BaseGame):
         :rtype: integer
         :return: ``None`` if n/a
         """
-        return self._stats.users_commented
+        return self._data.get("numcomments")
 
     @property
     def rating_num_weights(self):
