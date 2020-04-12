@@ -733,7 +733,7 @@ class BGGClient(BGGCommon):
                                         retry_delay=retry_delay,
                                         requests_per_minute=requests_per_minute)
 
-    def get_game_id(self, name, choose=BGGChoose.FIRST):
+    def get_game_id(self, name, choose=BGGChoose.BEST_RANK):
         """
         Returns the BGG ID of a game, searching by name
 
@@ -878,7 +878,7 @@ class BGGClient(BGGCommon):
         while added_items and len(game.comments) < total:
             page += 1
 
-            params["page"] = page
+            params['page'] = page
             xml_root = request_and_parse_xml(self.requests_session,
                                              self._thing_api_url,
                                              params={"id": game_id,
