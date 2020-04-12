@@ -125,7 +125,7 @@ class BGGCommon(object):
         # add the rate limiting adapter
         self.requests_session.mount(api_endpoint, RateLimitingAdapter(rpm=requests_per_minute))
 
-    def _get_game_id(self, name, game_type, choose):
+    def _get_game_id(self, name, game_type, choose, exact=True):
         """
         Returns the BGG ID of a game, searching by name
 
@@ -146,7 +146,7 @@ class BGGCommon(object):
             raise BGGValueError("invalid value for parameter 'choose': {}".format(choose))
 
         log.debug("getting game id for '{}'".format(name))
-        res = self.search(name, search_type=[game_type], exact=False)
+        res = self.search(name, search_type=[game_type], exact=exact)
 
         if not res:
             raise BGGItemNotFoundError("can't find '{}'".format(name))
@@ -155,6 +155,7 @@ class BGGCommon(object):
             return res[0].id
         elif choose == BGGChoose.RECENT:
             # choose the result with the biggest year
+            log.debug("\n  ".join(["{}:{}".format(str(xx.id), str(xx.year)) for xx in res]))
             return max(res, key=lambda x: x.year if x.year is not None else -300000).id
         else:
             # getting the best rank requires fetching the data of all games returned
@@ -735,7 +736,7 @@ class BGGClient(BGGCommon):
                                         retry_delay=retry_delay,
                                         requests_per_minute=requests_per_minute)
 
-    def get_game_id(self, name, choose=BGGChoose.FIRST):
+    def get_game_id(self, name, choose=BGGChoose.FIRST, exact=True):
         """
         Returns the BGG ID of a game, searching by name
 
@@ -749,7 +750,7 @@ class BGGClient(BGGCommon):
         :raises: :py:exc:`boardgamegeek.exceptions.BGGApiError` if the response couldn't be parsed
         :raises: :py:exc:`boardgamegeek.exceptions.BGGApiTimeoutError` if there was a timeout
         """
-        return self._get_game_id(name, game_type=BGGRestrictSearchResultsTo.BOARD_GAME, choose=choose)
+        return self._get_game_id(name, game_type=BGGRestrictSearchResultsTo.BOARD_GAME, choose=choose, exact=exact)
 
     def game_list(self, game_id_list, versions=False,
                   videos=False, historical=False, marketplace=False):
@@ -804,8 +805,8 @@ class BGGClient(BGGCommon):
 
         return game_list
 
-    def game(self, name=None, game_id=None, choose=BGGChoose.BEST_RANK, versions=False, videos=False, historical=False,
-             marketplace=False, comments=False, rating_comments=False, progress=None):
+    def game(self, name=None, game_id=None, choose=BGGChoose.FIRST, versions=False, videos=False, historical=False,
+             marketplace=False, comments=False, rating_comments=False, progress=None, exact=True):
         """
         Get information about a game.
 
@@ -834,7 +835,7 @@ class BGGClient(BGGCommon):
             raise BGGError("game name or id not specified")
 
         if game_id is None:
-            game_id = self.get_game_id(name, choose=choose)
+            game_id = self.get_game_id(name, choose=choose, exact=exact)
             if game_id is None:
                 raise BGGItemNotFoundError
 
