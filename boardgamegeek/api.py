@@ -145,7 +145,7 @@ class BGGCommon(object):
             raise BGGValueError("invalid value for parameter 'choose': {}".format(choose))
 
         log.debug("getting game id for '{}'".format(name))
-        res = self.search(name, search_type=[game_type], exact=False)
+        res = self.search(name, search_type=[game_type], exact=True)
 
         if not res:
             raise BGGItemNotFoundError("can't find '{}'".format(name))
@@ -689,10 +689,10 @@ class BGGCommon(object):
             kwargs = {"id": item.attrib["id"],
                       "name": xml_subelement_attr(item, "name"),
                       "yearpublished": xml_subelement_attr(item,
-                      "yearpublished",
-                       default=0,
-                       convert=int,
-                       quiet=True),
+                                                           "yearpublished",
+                                                           default=0,
+                                                           convert=int,
+                                                           quiet=True),
                       "type": item.attrib["type"]}
 
             results.append(SearchResult(kwargs))
@@ -733,7 +733,7 @@ class BGGClient(BGGCommon):
                                         retry_delay=retry_delay,
                                         requests_per_minute=requests_per_minute)
 
-    def get_game_id(self, name, choose=BGGChoose.BEST_RANK):
+    def get_game_id(self, name, choose=BGGChoose.FIRST):
         """
         Returns the BGG ID of a game, searching by name
 
@@ -802,7 +802,7 @@ class BGGClient(BGGCommon):
 
         return game_list
 
-    def game(self, name=None, game_id=None, choose=BGGChoose.BEST_RANK, versions=False, videos=False, historical=False,
+    def game(self, name=None, game_id=None, choose=BGGChoose.FIRST, versions=False, videos=False, historical=False,
              marketplace=False, comments=False, rating_comments=False, progress=None):
         """
         Get information about a game.
