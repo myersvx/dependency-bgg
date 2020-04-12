@@ -145,7 +145,7 @@ class BGGCommon(object):
             raise BGGValueError("invalid value for parameter 'choose': {}".format(choose))
 
         log.debug("getting game id for '{}'".format(name))
-        res = self.search(name, search_type=[game_type], exact=False)
+        res = self.search(name, search_type=[game_type], exact=True)
 
         if not res:
             raise BGGItemNotFoundError("can't find '{}'".format(name))
