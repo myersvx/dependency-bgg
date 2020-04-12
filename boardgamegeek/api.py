@@ -1,4 +1,5 @@
 # coding: utf-8
+# vinny ver 0.0.11
 """
 :mod:`boardgamegeek.api` - Core functions
 =========================================
@@ -145,7 +146,7 @@ class BGGCommon(object):
             raise BGGValueError("invalid value for parameter 'choose': {}".format(choose))
 
         log.debug("getting game id for '{}'".format(name))
-        res = self.search(name, search_type=[game_type], exact=True)
+        res = self.search(name, search_type=[game_type], exact=False)
 
         if not res:
             raise BGGItemNotFoundError("can't find '{}'".format(name))
@@ -644,7 +645,7 @@ class BGGCommon(object):
 
         return collection
 
-    def search(self, query, search_type=None, exact=True):
+    def search(self, query, search_type=None, exact=False):
         """
         Search for a game
 
@@ -683,6 +684,7 @@ class BGGCommon(object):
                                      timeout=self._timeout,
                                      retries=self._retries,
                                      retry_delay=self._retry_delay)
+        logging.debug(len((root.findall("item"))))
 
         results = []
         for item in root.findall("item"):
@@ -733,7 +735,7 @@ class BGGClient(BGGCommon):
                                         retry_delay=retry_delay,
                                         requests_per_minute=requests_per_minute)
 
-    def get_game_id(self, name, choose=BGGChoose.BEST_RANK):
+    def get_game_id(self, name, choose=BGGChoose.FIRST):
         """
         Returns the BGG ID of a game, searching by name
 
