@@ -644,7 +644,7 @@ class BGGCommon(object):
 
         return collection
 
-    def search(self, query, search_type=None, exact=False):
+    def search(self, query, search_type=None, exact=True):
         """
         Search for a game
 
