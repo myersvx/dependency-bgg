@@ -733,7 +733,7 @@ class BGGClient(BGGCommon):
                                         retry_delay=retry_delay,
                                         requests_per_minute=requests_per_minute)
 
-    def get_game_id(self, name, choose=BGGChoose.RECENT):
+    def get_game_id(self, name, choose=BGGChoose.BEST_RANK):
         """
         Returns the BGG ID of a game, searching by name
 
@@ -802,7 +802,7 @@ class BGGClient(BGGCommon):
 
         return game_list
 
-    def game(self, name=None, game_id=None, choose=BGGChoose.RECENT, versions=False, videos=False, historical=False,
+    def game(self, name=None, game_id=None, choose=BGGChoose.BEST_RANK, versions=False, videos=False, historical=False,
              marketplace=False, comments=False, rating_comments=False, progress=None):
         """
         Get information about a game.
